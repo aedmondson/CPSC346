@@ -7,9 +7,11 @@ struct node {
     struct node* next;
 };
 
+// This function prints a linked list
 void print(struct node* head) {
     struct node* tmp = head;
     printf("{");
+    // While this is not the last node
     while(tmp->next) {
         printf("%d, ", tmp->data);
         tmp = tmp->next;
@@ -20,7 +22,9 @@ void print(struct node* head) {
 struct node* merge(struct node* head1, struct node* head2) {
     struct node* newHead;
     struct node* tmp;
+    // If both heads are not null
     if(head1 && head2) {
+        // Makes the smallest first element head of return list
         if (head1->data < head2->data) {
             newHead = head1;
             head1 = head1->next;
@@ -30,13 +34,15 @@ struct node* merge(struct node* head1, struct node* head2) {
             head2 = head2->next;
         }
     }
+    // Returns list with elements if one is null
     else if (head1)
         newHead = head1;
     else if (head2)
         newHead = head2;
     tmp = newHead;
-    // while both heads point to items
+    // While both heads point to items
     while (head1 && head2) {
+        // Add smaller first item to return list
         if (head1->data < head2->data) {
             tmp->next = head1;
             tmp = head1;
@@ -62,17 +68,20 @@ struct node* mergesort(struct node* head, int size) {
     int i;
     int mid = size / 2;
 
-    if(size <= 1)
+    // Check for null pointer and size
+    if(!head || size <= 1)
         return head;
 
+    // iterate to get pointers at middle of list
     for (i = 1; i < mid; i++)
         tmp = tmp->next;
-
     tmp2 = tmp->next;
     tmp->next = NULL;
+
     return merge(mergesort(head, i), mergesort(tmp2, size - i));
 }
 
+// iteratively checks if list is sorted, used for testing
 int issorted(struct node* head) {
     struct node* tmp = head;
     while (tmp->next) {
@@ -86,13 +95,58 @@ int issorted(struct node* head) {
 int main() {
     struct node* head = malloc(sizeof(struct node));
     struct node* tail;
+    // these are used for the merge test
+    struct node* head2 = malloc(sizeof(struct node));
+    struct node* tail2;
+    struct node* tmp;
+
+    // null pointer test
+    mergesort(tail, 0);
 
     tail = head;
+    tail2 = head2;
+    head->data = 0;
+    head2->data = 1;
+
+    // constructing two interleaved lists for merge test
+    for(int i = 2; i < 10; i++) {
+        tmp = malloc(sizeof(struct node));
+        tmp->data = i;
+        if(i % 2) {
+            tail2->next = tmp;
+            tail2 = tmp;
+        }
+        else {
+            tail->next = tmp;
+            tail = tmp;
+        }
+    }
+
+    // test merge
+    head = merge(head, head2);
+    printf("Merge test: ");
+    print(head);
+    printf("\n--\n");
+
+    // free merge test list
+    while (head->next) {
+        tmp = head->next;
+        free(head);
+        head = tmp;
+    }
+
+    tail = head;
+    tail->next = NULL;
     tail->data = rand() % 100;
+
+    // single element test
+    mergesort(head, 1);
+
     for(int i = 0; i < 24; i++) {
         tail->next = malloc(sizeof(struct node));
         tail = tail->next;
     }
+    // test 10 times with random 25-element lists
     srand(time(NULL));
     for (int i = 0; i < 10; i++) {
         tail = head;
