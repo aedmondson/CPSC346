@@ -1,0 +1,18 @@
+[1]
+  a. The instruction push %eax will decrement %esp by 4, and place the value from %eax (4) onto the stack as a 32-bit number.
+  b. The instruction pop %ebx will increment %esp by 4, and place the value from the top of the stack (15) into %ebx.
+  
+[2]
+  1.  %rip = 400544
+  
+  2.  %rip = 400650
+      %rsp = 0xFF00
+      (%rsp) = 400549
+      
+  3.  %rip = 400657
+      %rsp = 0xFF00
+      (%rsp) = 400549
+      
+  4.  %rip = 400549
+      %rsp = 0xFF08
+      (%rsp) = 0x8
